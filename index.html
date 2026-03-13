@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sharp Edge Barbershop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --cream: #f5f0e8;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --charcoal: #1e1e1e;
+    --mid: #2e2e2e;
+    --muted: #888;
+    --white: #fff;
+    --radius: 4px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ink);
+    color: var(--cream);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 5%;
+    background: rgba(13,13,13,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+  }
+  .nav-links { display: flex; gap: 28px; list-style: none; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--cream);
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--gold); }
+  @media (max-width: 600px) { .nav-links { display: none; } }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 120px 5% 80px;
+    background: var(--ink);
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1600&auto=format&fit=crop&q=80');
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.22) saturate(0.7);
+    z-index: 0;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0; z-index: 1;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.10) 0%, transparent 70%),
+      linear-gradient(to bottom, rgba(13,13,13,0.3) 0%, rgba(13,13,13,0.65) 100%);
+    pointer-events: none;
+  }
+  .hero > *:not(.hero-bg) { position: relative; z-index: 2; }
+  .hero-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4rem, 14vw, 11rem);
+    line-height: 0.9;
+    letter-spacing: 0.04em;
+    color: var(--cream);
+    margin-bottom: 24px;
+    opacity: 0; animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero h1 span { color: var(--gold); }
+  .hero-tagline {
+    font-size: clamp(0.95rem, 2vw, 1.2rem);
+    color: rgba(245,240,232,0.55);
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    max-width: 480px;
+    margin-bottom: 48px;
+    opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .hero-cta {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 18px 44px;
+    border-radius: var(--radius);
+    transition: background 0.25s, transform 0.2s;
+    opacity: 0; animation: fadeUp 0.8s 0.8s forwards;
+  }
+  .hero-cta:hover { background: var(--gold-light); transform: translateY(-2px); }
+  .hero-scroll {
+    position: absolute; bottom: 32px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted);
+    animation: bounce 2s infinite;
+  }
+  .hero-scroll::after {
+    content: '';
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  /* ── SECTION SHARED ── */
+  section { padding: 100px 5%; }
+  .section-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.4rem, 6vw, 4.5rem);
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    font-size: 0.95rem;
+    color: rgba(245,240,232,0.5);
+    font-weight: 300;
+    max-width: 500px;
+    margin-bottom: 60px;
+    line-height: 1.7;
+  }
+
+  /* ── SERVICES ── */
+  #services { background: var(--charcoal); }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .service-card {
+    background: var(--ink);
+    border: 1px solid rgba(201,168,76,0.12);
+    border-radius: var(--radius);
+    padding: 36px 28px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .service-card:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-4px); }
+  .service-card:hover::before { transform: scaleX(1); }
+  .service-icon {
+    font-size: 1.8rem; margin-bottom: 20px;
+  }
+  .service-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    color: var(--cream);
+  }
+  .service-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .service-footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .service-price {
+    font-size: 1.6rem;
+    font-family: 'Bebas Neue', sans-serif;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .service-book-btn {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border: 1px solid rgba(201,168,76,0.4);
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    background: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+  }
+  .service-book-btn:hover { background: var(--gold); color: var(--ink); }
+
+  /* ── GALLERY ── */
+  #gallery { background: var(--ink); }
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 220px 220px;
+    gap: 10px;
+  }
+  .gallery-item {
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    background: var(--charcoal);
+  }
+  .gallery-item:nth-child(1) { grid-column: 1 / 6; grid-row: 1 / 3; }
+  .gallery-item:nth-child(2) { grid-column: 6 / 9; grid-row: 1 / 2; }
+  .gallery-item:nth-child(3) { grid-column: 9 / 13; grid-row: 1 / 2; }
+  .gallery-item:nth-child(4) { grid-column: 6 / 9; grid-row: 2 / 3; }
+  .gallery-item:nth-child(5) { grid-column: 9 / 13; grid-row: 2 / 3; }
+  @media (max-width: 700px) {
+    .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .gallery-item { grid-column: auto !important; grid-row: auto !important; min-height: 180px; }
+  }
+  .gallery-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s ease, filter 0.4s ease;
+    filter: grayscale(15%) brightness(0.92);
+  }
+  .gallery-item:hover .gallery-img { transform: scale(1.07); filter: grayscale(0%) brightness(1); }
+  .gallery-placeholder {
+    width: 100%; min-height: 200px;
+    background: var(--mid);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .gallery-placeholder span { font-size: 2rem; }
+
+  /* ── MAP ── */
+  #location { background: var(--charcoal); }
+  .location-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start;
+  }
+  @media (max-width: 760px) { .location-inner { grid-template-columns: 1fr; } }
+  .map-placeholder {
+    background: var(--mid);
+    border-radius: var(--radius);
+    min-height: 340px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 16px;
+    color: var(--cream);
+    border: 1px solid rgba(201,168,76,0.2);
+    position: relative;
+    overflow: hidden;
+  }
+  .map-placeholder::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=900&auto=format&fit=crop&q=80');
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.28) saturate(0.5);
+  }
+  .map-pin { font-size: 2.5rem; position: relative; z-index: 1; }
+  .map-label {
+    font-size: 0.9rem; letter-spacing: 0.2em; text-transform: uppercase;
+    position: relative; z-index: 1; font-weight: 600;
+  }
+  .map-embed-note {
+    font-size: 0.75rem; opacity: 0.6; max-width: 220px; text-align: center;
+    position: relative; z-index: 1;
+  }
+  .location-info { display: flex; flex-direction: column; gap: 28px; }
+  .info-block h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.1rem; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 8px;
+  }
+  .info-block p {
+    font-size: 0.92rem; color: rgba(245,240,232,0.65); line-height: 1.7;
+  }
+  .hours-row {
+    display: flex; justify-content: space-between;
+    font-size: 0.88rem; padding: 8px 0;
+    border-bottom: 1px solid rgba(201,168,76,0.08);
+    color: rgba(245,240,232,0.7);
+  }
+  .hours-row:last-child { border-bottom: none; }
+  .hours-row .day { font-weight: 500; }
+  .hours-row .time { color: var(--gold); }
+
+  /* ── CONTACT ── */
+  #contact { background: var(--ink); }
+  .contact-inner {
+    max-width: 600px;
+  }
+  .contact-channels {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 40px;
+  }
+  @media (max-width: 480px) { .contact-channels { grid-template-columns: 1fr; } }
+  .contact-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 20px 24px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: transform 0.2s, filter 0.2s;
+    cursor: pointer; border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .contact-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
+  .contact-btn-icon { font-size: 1.4rem; }
+  .btn-whatsapp { background: #25D366; color: #fff; }
+  .btn-wechat { background: #07C160; color: #fff; }
+  .btn-email { background: var(--charcoal); color: var(--cream); border: 1px solid rgba(201,168,76,0.2); }
+  .btn-phone { background: var(--gold); color: var(--ink); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(201,168,76,0.1);
+    padding: 40px 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 0.1em; color: var(--gold);
+  }
+  .footer-copy {
+    font-size: 0.78rem; color: var(--muted); letter-spacing: 0.05em;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--charcoal);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+    padding: 40px 36px;
+    max-width: 460px; width: 100%;
+    position: relative;
+    transform: translateY(30px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: none; border: none; color: var(--muted);
+    font-size: 1.4rem; cursor: pointer; line-height: 1;
+    transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--cream); }
+  .modal-eyebrow {
+    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .modal-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem; letter-spacing: 0.06em; color: var(--cream); margin-bottom: 6px;
+  }
+  .modal-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem; color: var(--gold); margin-bottom: 28px;
+  }
+  .modal-divider {
+    border: none; border-top: 1px solid rgba(201,168,76,0.12); margin-bottom: 28px;
+  }
+  .modal-subtitle {
+    font-size: 0.8rem; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 16px;
+  }
+  .modal-channels { display: flex; flex-direction: column; gap: 12px; }
+  .modal-channel-btn {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 20px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-weight: 500; font-size: 0.95rem;
+    transition: transform 0.2s, filter 0.2s;
+    cursor: pointer; border: none;
+    font-family: 'DM Sans', sans-serif;
+    width: 100%; text-align: left;
+  }
+  .modal-channel-btn:hover { transform: translateX(4px); filter: brightness(1.1); }
+  .modal-channel-btn .icon { font-size: 1.3rem; width: 32px; text-align: center; }
+  .modal-channel-btn .label { display: flex; flex-direction: column; }
+  .modal-channel-btn .label span:first-child { font-size: 0.95rem; font-weight: 600; }
+  .modal-channel-btn .label span:last-child { font-size: 0.75rem; opacity: 0.7; font-weight: 400; }
+  .wechat-modal-btn { background: var(--mid); color: var(--cream); }
+  .whatsapp-modal-btn { background: #25D366; color: #fff; }
+  .email-modal-btn { background: var(--mid); color: var(--cream); }
+  .phone-modal-btn { background: var(--gold); color: var(--ink); }
+
+  .wechat-info {
+    display: none;
+    margin-top: 16px;
+    background: var(--mid);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+  .wechat-info.show { display: block; }
+  .wechat-qr {
+    width: 140px; height: 140px;
+    background: var(--ink);
+    border: 2px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px;
+    margin: 0 auto 12px;
+    color: var(--muted); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .wechat-qr span { font-size: 2rem; }
+  .wechat-id {
+    font-size: 0.85rem; color: var(--cream); font-weight: 600; margin-bottom: 4px;
+  }
+  .wechat-note { font-size: 0.75rem; color: var(--muted); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">The Sharp Edge</div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#location">Location</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-eyebrow">Est. 2015 · Premium Grooming</div>
+  <h1>The<br><span>Sharp</span><br>Edge</h1>
+  <p class="hero-tagline">Precision cuts. Classic shaves. A chair you never want to leave.</p>
+  <a href="#services" class="hero-cta">Book a Service</a>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <p class="section-label reveal">What We Offer</p>
+  <h2 class="section-title reveal">Our Services</h2>
+  <p class="section-sub reveal">Every cut is a conversation. Every shave a ritual. Click any service to book your appointment.</p>
+  <div class="services-grid" id="servicesGrid">
+    <!-- cards injected by JS -->
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <p class="section-label reveal">The Work</p>
+  <h2 class="section-title reveal">Gallery</h2>
+  <p class="section-sub reveal">Real results from real clients. Craftsmanship you can see.</p>
+  <div class="gallery-grid reveal">
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=900&auto=format&fit=crop&q=80" alt="Classic haircut at the barbershop" loading="lazy">
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=700&auto=format&fit=crop&q=80" alt="Precision fade cut" loading="lazy">
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=700&auto=format&fit=crop&q=80" alt="Hot towel straight razor shave" loading="lazy">
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1622286342621-4bd786c2447c?w=700&auto=format&fit=crop&q=80" alt="Beard trim and shape" loading="lazy">
+    </div>
+    <div class="gallery-item">
+      <img class="gallery-img" src="https://images.unsplash.com/photo-1512690459411-b9245aed614b?w=700&auto=format&fit=crop&q=80" alt="Modern barbershop interior" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<section id="location">
+  <p class="section-label reveal">Find Us</p>
+  <h2 class="section-title reveal">Location</h2>
+  <div class="location-inner">
+    <div class="map-placeholder reveal">
+      <div class="map-pin">📍</div>
+      <div class="map-label">123 Main Street</div>
+      <div class="map-embed-note">Replace this with a Google Maps embed iframe</div>
+    </div>
+    <div class="location-info reveal">
+      <div class="info-block">
+        <h3>Address</h3>
+        <p>123 Main Street<br>Your City, State 00000</p>
+      </div>
+      <div class="info-block">
+        <h3>Hours</h3>
+        <div class="hours-row"><span class="day">Monday–Friday</span><span class="time">9am – 7pm</span></div>
+        <div class="hours-row"><span class="day">Saturday</span><span class="time">9am – 6pm</span></div>
+        <div class="hours-row"><span class="day">Sunday</span><span class="time">10am – 4pm</span></div>
+      </div>
+      <div class="info-block">
+        <h3>Phone</h3>
+        <p>+1 (555) 000-0000</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <p class="section-label reveal">Get In Touch</p>
+    <h2 class="section-title reveal">Contact Us</h2>
+    <p class="section-sub reveal">Walk-ins welcome. Appointments guaranteed. Reach out on your favourite platform.</p>
+    <div class="contact-channels reveal">
+      <a class="contact-btn btn-whatsapp" href="https://wa.me/PHONENUMBER?text=Hello%20I%20want%20to%20book%20a%20service" target="_blank">
+        <span class="contact-btn-icon">💬</span> WhatsApp
+      </a>
+      <a class="contact-btn btn-wechat" href="#" id="contactWechat">
+        <span class="contact-btn-icon">💚</span> WeChat
+      </a>
+      <a class="contact-btn btn-email" href="mailto:your@email.com?subject=Booking&body=Hello%20I%20want%20to%20book%20a%20service">
+        <span class="contact-btn-icon">✉️</span> Email Us
+      </a>
+      <a class="contact-btn btn-phone" href="tel:+15550000000">
+        <span class="contact-btn-icon">📞</span> Call Now
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">The Sharp Edge</div>
+  <div class="footer-copy">© 2025 The Sharp Edge Barbershop. All rights reserved.</div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+    <div class="modal-eyebrow">Book Appointment</div>
+    <div class="modal-title" id="modalServiceName">Haircut</div>
+    <div class="modal-price" id="modalServicePrice">$25</div>
+    <hr class="modal-divider">
+    <div class="modal-subtitle">Choose how to book</div>
+    <div class="modal-channels">
+      <a class="modal-channel-btn whatsapp-modal-btn" id="modalWhatsApp" href="#" target="_blank">
+        <span class="icon">💬</span>
+        <span class="label"><span>WhatsApp</span><span>Send a message instantly</span></span>
+      </a>
+      <button class="modal-channel-btn wechat-modal-btn" id="modalWechatBtn">
+        <span class="icon">💚</span>
+        <span class="label"><span>WeChat</span><span>View ID &amp; QR code</span></span>
+      </button>
+      <a class="modal-channel-btn email-modal-btn" id="modalEmail" href="#">
+        <span class="icon">✉️</span>
+        <span class="label"><span>Email</span><span>Send booking request</span></span>
+      </a>
+      <a class="modal-channel-btn phone-modal-btn" href="tel:+15550000000">
+        <span class="icon">📞</span>
+        <span class="label"><span>Call Us</span><span>+1 (555) 000-0000</span></span>
+      </a>
+    </div>
+    <div class="wechat-info" id="wechatInfo">
+      <div class="wechat-qr"><span>🟩</span>QR Code Placeholder</div>
+      <div class="wechat-id">WeChat ID: SharpEdgeBarber</div>
+      <div class="wechat-note">Scan the QR code or search our ID in WeChat</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── DATA ── */
+  const services = [
+    { icon: '✂️', name: 'Classic Haircut', desc: 'A timeless cut styled to your shape and face. Includes consultation, wash & finish.', price: '$25', duration: '45 min' },
+    { icon: '🪒', name: 'Hot Towel Shave', desc: 'Traditional straight-razor shave with steamed towel and premium balm.', price: '$35', duration: '40 min' },
+    { icon: '💈', name: 'Fade & Style', desc: 'Precision skin or taper fade with custom styling. Our most popular service.', price: '$30', duration: '50 min' },
+    { icon: '✂️', name: 'Beard Trim & Shape', desc: 'Crisp beard line-up, shaping and conditioning oil finish.', price: '$20', duration: '30 min' },
+    { icon: '👑', name: 'Full Groom Package', desc: 'Haircut + hot shave + beard sculpt. The full experience from top to finish.', price: '$65', duration: '90 min' },
+    { icon: '👦', name: 'Kids Cut', desc: 'Gentle, fun cuts for children under 12. Patient hands and quick finishes.', price: '$18', duration: '30 min' },
+  ];
+
+  /* ── RENDER SERVICES ── */
+  const grid = document.getElementById('servicesGrid');
+  services.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'service-card reveal';
+    card.innerHTML = `
+      <div class="service-icon">${s.icon}</div>
+      <div class="service-name">${s.name}</div>
+      <div class="service-desc">${s.desc}</div>
+      <div class="service-footer">
+        <div class="service-price">${s.price}</div>
+        <button class="service-book-btn">Book →</button>
+      </div>`;
+    card.addEventListener('click', () => openModal(s));
+    grid.appendChild(card);
+  });
+
+  /* ── MODAL ── */
+  const overlay = document.getElementById('modalOverlay');
+  const WHATSAPP_NUM = 'PHONENUMBER';
+  const EMAIL = 'your@email.com';
+
+  function openModal(service) {
+    document.getElementById('modalServiceName').textContent = service.name;
+    document.getElementById('modalServicePrice').textContent = service.price + ' · ' + service.duration;
+    const msg = encodeURIComponent(`Hello, I want to book the "${service.name}" service (${service.price}).`);
+    document.getElementById('modalWhatsApp').href = `https://wa.me/${WHATSAPP_NUM}?text=${msg}`;
+    document.getElementById('modalEmail').href = `mailto:${EMAIL}?subject=Booking: ${service.name}&body=${msg}`;
+    document.getElementById('wechatInfo').classList.remove('show');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  document.getElementById('modalWechatBtn').addEventListener('click', () => {
+    document.getElementById('wechatInfo').classList.toggle('show');
+  });
+
+  /* Contact WeChat */
+  document.getElementById('contactWechat').addEventListener('click', e => {
+    e.preventDefault();
+    alert('WeChat ID: SharpEdgeBarber\n\nSearch for us in WeChat or ask for a QR code in store.');
+  });
+
+  /* ── INTERSECTION OBSERVER (reveal) ── */
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
